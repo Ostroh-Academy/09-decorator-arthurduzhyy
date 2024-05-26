@@ -1,52 +1,52 @@
-﻿public abstract class Component
+﻿public abstract class GraphicComponent
 {
-    public abstract string Operation();
+    public abstract string Draw();
 }
 
-class ConcreteComponent : Component
+class SimpleGraphic : GraphicComponent
 {
-    public override string Operation() => "ConcreteComponent";
+    public override string Draw() => "Simple Graphic";
 }
 
-abstract class Decorator : Component
+abstract class GraphicDecorator : GraphicComponent
 {
-    protected Component _component;
+    protected GraphicComponent _component;
 
-    public Decorator(Component component)
+    public GraphicDecorator(GraphicComponent component)
     {
         _component = component;
     }
 
-    public void SetComponent(Component component)
+    public void SetComponent(GraphicComponent component)
     {
         _component = component;
     }
 
-    public override string Operation()
+    public override string Draw()
     {
         if (_component != null)
-            return _component.Operation();
+            return _component.Draw();
         return string.Empty;
     }
 }
 
-class ConcreteDecoratorA : Decorator
+class ShadowDecorator : GraphicDecorator
 {
-    public ConcreteDecoratorA(Component comp) : base(comp) { }
+    public ShadowDecorator(GraphicComponent component) : base(component) { }
 
-    public override string Operation() => $"ConcreteDecoratorA({base.Operation()})";
+    public override string Draw() => $"Shadow({base.Draw()})";
 }
 
-class ConcreteDecoratorB : Decorator
+class GradientDecorator : GraphicDecorator
 {
-    public ConcreteDecoratorB(Component comp) : base(comp) { }
+    public GradientDecorator(GraphicComponent component) : base(component) { }
 
-    public override string Operation() => $"ConcreteDecoratorB({base.Operation()})";
+    public override string Draw() => $"Gradient({base.Draw()})";
 }
 
 public class Client
 {
-    public void ClientCode(Component component) => Console.WriteLine("RESULT: " + component.Operation());
+    public void ClientCode(GraphicComponent component) => Console.WriteLine("RESULT: " + component.Draw());
 }
 
 class Program
@@ -55,14 +55,14 @@ class Program
     {
         var client = new Client();
 
-        var simple = new ConcreteComponent();
-        Console.WriteLine("Client: I get a simple component:");
+        var simple = new SimpleGraphic();
+        Console.WriteLine("Client: I get a simple graphic:");
         client.ClientCode(simple);
         Console.WriteLine();
 
-        var decorator1 = new ConcreteDecoratorA(simple);
-        var decorator2 = new ConcreteDecoratorB(decorator1);
-        Console.WriteLine("Client: Now I've got a decorated component:");
-        client.ClientCode(decorator2);
+        var withShadow = new ShadowDecorator(simple);
+        var withGradient = new GradientDecorator(withShadow);
+        Console.WriteLine("Client: Now I've got a decorated graphic:");
+        client.ClientCode(withGradient);
     }
 }
